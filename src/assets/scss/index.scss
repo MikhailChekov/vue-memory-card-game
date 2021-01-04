@@ -1,0 +1,23 @@
+@import 'chunk.scss';
+
+h1 {
+    color: red;
+    transition: .3s ease;
+}
+
+.box{
+    display: flex;
+    @media (max-width: 967px) {
+        flex-direction: column;
+    }
+}
+
+.box2{
+    display: inline;
+    
+}
+
+.box3{
+    display: block;
+    
+}
