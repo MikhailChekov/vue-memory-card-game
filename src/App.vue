@@ -32,15 +32,13 @@ export default {
         imgs: DEFCARDS
     }),
     methods: {
-        startGame(){
-            for(let i = 1; i <= 18; i++){
-                this.imgs.push(`./assets/img/nature/${i}.jpeg`)
-            }
-            this.isStart = false;
-            this.isGame = true;
-
-            console.log(this.imgs);
-        }
+        // startGame(){
+        //     for(let i = 1; i <= 18; i++){
+        //         this.imgs.push(`./assets/img/nature/${i}.jpeg`)
+        //     }
+        //     this.isStart = false;
+        //     this.isGame = true;
+        // }
     }
 }
 </script>

@@ -10,35 +10,54 @@
 <script>
 export default {
     props: ['arr'],
-    data: () => ({
-        // copy cards from props and sort it
-        cards: [...this.arr].sort(function() {
-            return Math.random() - 0.5;
-        }),
-        // obj for save active card for comparsion
-        activeData: {
-            index: 0,
-            isSomeActive: false
-        },
-    }),
+    data() {
+        return {
+            // copy cards from props and sort it
+            cards: [...this.arr.concat()].sort(function() {
+                return Math.random() - 0.5;
+            }),
+            isSomeActive: false,
+            // TODO: implement check for 2 open cards and stop action
+            isTwoOpen: false
+        }
+    },
     methods: {
         toggleActive(i) {
             // if click to active card - return
             if (this.cards[i].isActive) return;
 
-            // if some active - check 2 card to equal
+            //if some active - check 2 card to equal
             if (this.isSomeActive) {
-                checkCards()
+                this.cards[i].isActive = true;
+                this.checkCards(i)
+            }else{
+                this.cards[i].isActive = true;
+                this.isSomeActive = true;
             }
 
-            this.cards[i].isActive = true;
+
         },
-        //TODO: check 2 cards and hide if true
-        checkCards(){}
-    },
-    // computed: {
-    //     compCards() {},
-    // },
+        //check 2 cards and hide if true
+        checkCards(i){
+            this.isSomeActive = false;
+
+            if(this.cards.filter(e => e.isActive).src === this.cards[i].src) {
+                console.log('Same one!');
+                this.cards = this.cards.map(e => {
+                    return {...e, isActive: false }
+                });
+                this.isOpen = false
+            } else{
+                console.log('not the same');
+                setTimeout(() => {
+                    this.cards = this.cards.map(e => {
+                        return {...e, isActive: false }
+                    });
+                    this.isOpen = false
+                }, 1500)
+            }
+        }
+    }
 };
 </script>
 
