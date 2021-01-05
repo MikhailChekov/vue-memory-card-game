@@ -1,44 +1,45 @@
 <template>
     <div class="wrapper">
         <div class="container">
+            <h1 class="h1">Vue memory js game</h1>
             <Start v-if="isStart" @start="startGame" />
+            <Game 
+                v-else-if="isGame"
+                :arr="imgs"
+            />
             <h1 class="h1" v-else>Какая-то хрень пошла не так!</h1>
         </div>
     </div>
 </template>
 
 <script>
-const fs = require('fs');
-const path = require('path');
 
 import Start from './components/start/Start.vue';
+import Game from './components/game/Game.vue';
+import { DEFCARDS } from './constants';
 
 export default {
     name: 'App',
     components: {
         Start,
+        Game
     },
     data: () => ({
-        isStart: true,
-        isLoading: false,
+        isStart: false,
+        // for api loading
+        //isLoading: false,
+        isGame: true,
+        imgs: DEFCARDS
     }),
     methods: {
         startGame(){
-            let files = this.getFiles('./assets/img/actors');
-            console.log('files', files);
-        },
-        getFiles(dir, files_){
-            files_ = files_ || [];
-            var files = fs.readdirSync(dir);
-            for (var i in files){
-                var name = dir + '/' + files[i];
-                if (fs.statSync(name).isDirectory()){
-                    getFiles(name, files_);
-                } else {
-                    files_.push(name);
-                }
+            for(let i = 1; i <= 18; i++){
+                this.imgs.push(`./assets/img/nature/${i}.jpeg`)
             }
-            return files_;
+            this.isStart = false;
+            this.isGame = true;
+
+            console.log(this.imgs);
         }
     }
 }

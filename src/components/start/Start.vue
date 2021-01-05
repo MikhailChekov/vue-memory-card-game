@@ -22,10 +22,9 @@
 
 <script>
 export default {
-    props: ['start'],
     data: () => {
         return {
-            theme: 'Flags',
+            // theme: 'Flags',
         };
     },
 };
