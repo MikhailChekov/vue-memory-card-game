@@ -1,6 +1,6 @@
 <template>
     <div class="gameField">
-        <div v-for="(card, i) in cards" :key="i" class="card" :class="{ active: card.isActive }" @click="toggleActive(i)">
+        <div v-for="(card, i) in cards" :key="i" class="card" :class="{ open: card.isOpen, hidden: card.isHidden }" @click="handleClick(i)">
             <div class="card__front"></div>
             <div class="card__back" :style="{ 'background-image': `url(${card.src})` }"></div>
         </div>
@@ -16,49 +16,57 @@ export default {
             cards: [...this.arr.concat()].sort(function() {
                 return Math.random() - 0.5;
             }),
-            isSomeActive: false,
-            // TODO: implement check for 2 open cards and stop action
-            isTwoOpen: false
-        }
+            openIndex: null,
+            isTwoOpen: false,
+        };
     },
     methods: {
-        toggleActive(i) {
-            // if click to active card - return
-            if (this.cards[i].isActive) return;
+        handleClick(i) {
+            if (this.cards[i].isOpen) return;
+            // if click 2 cards open - close
+            if (this.isTwoOpen) this.closeAll();
 
-            //if some active - check 2 card to equal
-            if (this.isSomeActive) {
-                this.cards[i].isActive = true;
-                this.checkCards(i)
-            }else{
-                this.cards[i].isActive = true;
-                this.isSomeActive = true;
+            //if one active - check 2 card to equal
+            if (this.openIndex !== null) {
+                this.cards[i].isOpen = true;
+                this.checkCards(i);
+            } else {
+                this.cards[i].isOpen = true;
+                this.openIndex = i;
             }
-
-
         },
         //check 2 cards and hide if true
-        checkCards(i){
-            this.isSomeActive = false;
-
-            if(this.cards.filter(e => e.isActive).src === this.cards[i].src) {
-                console.log('Same one!');
+        checkCards(i) {
+            if (this.cards[this.openIndex].src === this.cards[i].src) {
+                console.log('SAME');
+                let src = this.cards[i].src;
                 this.cards = this.cards.map(e => {
-                    return {...e, isActive: false }
-                });
-                this.isOpen = false
-            } else{
-                console.log('not the same');
-                setTimeout(() => {
-                    this.cards = this.cards.map(e => {
-                        return {...e, isActive: false }
-                    });
-                    this.isOpen = false
-                }, 1500)
+                    if(e.src === src){
+                        e = {...e, isHidden: true}
+                    }
+                    return e;
+                })
             }
-        }
-    }
+
+            this.isTwoOpen = true;
+        },
+        // close all open cards
+        closeAll() {
+            this.openIndex = null;
+            this.isTwoOpen = false;
+            this.cards = this.cards.map(e => {
+                return { ...e, isOpen: false };
+            });
+        },
+    },
 };
+
+// this.cards = this.cards.map(e => {
+//     if(e.src = this.cards[i].src){
+//         return e = {...e, isHidden: true};
+//     }
+//     return e;
+// });
 </script>
 
 <style lang="scss" scoped>
@@ -70,7 +78,6 @@ export default {
 }
 .card {
     position: relative;
-    // flex: 1 1 15%;
     width: 100px;
     height: 100px;
     cursor: pointer;
@@ -104,7 +111,7 @@ export default {
 
     // .card__descr
 
-    &.active {
+    &.open {
         .card__front {
             transform: perspective(600px) rotateY(-180deg);
         }
@@ -112,6 +119,9 @@ export default {
         .card__back {
             transform: perspective(600px) rotateY(0);
         }
+    }
+    &.hidden {
+        visibility: hidden;
     }
 }
 </style>
