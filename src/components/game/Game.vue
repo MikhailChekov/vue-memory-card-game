@@ -1,14 +1,21 @@
 <template>
-    <div class="gameField">
-        <div v-for="(card, i) in cards" :key="i" class="card" :class="{ open: card.isOpen, hidden: card.isHidden }" @click="handleClick(i)">
-            <div class="card__front"></div>
-            <div class="card__back" :style="{ 'background-image': `url(${card.src})` }"></div>
+    <div>
+        <timer ref="timer"></timer>
+        <div class="gameField" :style="{width: fieldWidth}">
+            <div v-for="(card, i) in cards" :key="i" class="card" :class="{ open: card.isOpen, hidden: card.isHidden }" @click="handleClick(i)">
+                <div class="card__front"></div>
+                <div class="card__back" :style="{ 'background-image': `url(${card.src})` }"></div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+
+import Timer from './Timer.vue';
+
 export default {
+    components: { Timer },
     props: ['arr'],
     data() {
         return {
@@ -16,12 +23,24 @@ export default {
             cards: [...this.arr.concat()].sort(function() {
                 return Math.random() - 0.5;
             }),
+            count: this.arr.length,
+            gameTime: null,
             openIndex: null,
             isTwoOpen: false,
         };
     },
+    // mounted(){
+    //     this.$refs.timer.startTimer()
+    // },
     methods: {
         handleClick(i) {
+            if(this.isGameOver()) {
+                //TODO: not working when gameOver
+                this.$refs.timer.stopTimer();
+                this.gameTime = this.$refs.timer.currentTime;
+                console.log(this.gameTime);
+            }
+
             if (this.cards[i].isOpen) return;
             // if click 2 cards open - close
             if (this.isTwoOpen) this.closeAll();
@@ -38,7 +57,6 @@ export default {
         //check 2 cards and hide if true
         checkCards(i) {
             if (this.cards[this.openIndex].src === this.cards[i].src) {
-                console.log('SAME');
                 let src = this.cards[i].src;
                 this.cards = this.cards.map(e => {
                     if(e.src === src){
@@ -58,21 +76,38 @@ export default {
                 return { ...e, isOpen: false };
             });
         },
+
+        //TODO:
+        isGameOver() {
+            console.log('gameOVer');
+
+            return this.cards.every(e => { return e.isHidden === true});
+        }
     },
+    computed: {
+        fieldWidth(){
+            let fieldWidth = 0;
+
+            switch(this.count){
+                case 12: 
+                    fieldWidth = 440 + 'px';
+                    break;
+                case 20:  
+                    fieldWidth = 555 + 'px';
+                    break;
+                case 36:
+                    fieldWidth = 660 + 'px';
+                }
+            return fieldWidth;
+        }
+    }
 };
 
-// this.cards = this.cards.map(e => {
-//     if(e.src = this.cards[i].src){
-//         return e = {...e, isHidden: true};
-//     }
-//     return e;
-// });
 </script>
 
 <style lang="scss" scoped>
 .gameField {
     margin: 0 auto;
-    width: 700px;
     display: flex;
     flex-wrap: wrap;
 }

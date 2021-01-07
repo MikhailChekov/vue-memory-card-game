@@ -5,6 +5,7 @@
             <Start v-if="isStart" @start="startGame" />
             <Game 
                 v-else-if="isGame"
+                @gameOver="gameOver"
                 :arr="imgs"
             />
             <h1 class="h1" v-else>Какая-то хрень пошла не так!</h1>
@@ -25,21 +26,27 @@ export default {
         Game
     },
     data: () => ({
-        isStart: false,
+        imgs: [],
+        imgsCount: null,
+        isStart: true,
         // for api loading
         //isLoading: false,
-        isGame: true,
-        imgs: DEFCARDS
+        isGame: false,
     }),
     methods: {
-        // startGame(){
-        //     for(let i = 1; i <= 18; i++){
-        //         this.imgs.push(`./assets/img/nature/${i}.jpeg`)
-        //     }
-        //     this.isStart = false;
-        //     this.isGame = true;
-        // }
-    }
+        startGame(count){
+            let initialArr = DEFCARDS.slice(0, count);
+            // Making deep copy of array for making reactive all same elements
+            let copy = initialArr.map(e => ({...e}));
+            this.imgs.push(...initialArr, ...copy);
+
+            this.isStart = false;
+            this.isGame = true;
+        },
+        gameOver(){
+            console.log('GameOver');
+        }
+    },
 }
 </script>
 
@@ -61,7 +68,6 @@ body {
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
-    padding-top: 50px;
 }
 
 .h1 {
