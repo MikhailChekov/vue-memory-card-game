@@ -9,7 +9,6 @@ const { VueLoaderPlugin } = require('vue-loader');
 
 const isDev = process.env.NODE_ENV === 'development';
 
-
 const PATHS = {
     src: path.join(__dirname, '../src'),
     dist: path.join(__dirname, '../dist'),
@@ -177,6 +176,7 @@ module.exports = {
                         loader: 'file-loader',
                         options: {
                             name: '[name].[ext]',
+                            esModule: false
                         }
                     }
                 ]
@@ -196,6 +196,10 @@ module.exports = {
             }
         ]
     },
-
-    plugins: plugins()
+    plugins: plugins(),
+    // resolve: {
+    //     alias: {
+    //         "~": path.resolve(__dirname, 'src/')
+    //     }
+    // }
 }

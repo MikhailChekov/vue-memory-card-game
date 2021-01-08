@@ -5,46 +5,51 @@
             <Start v-if="isStart" @start="startGame" />
             <Game 
                 v-else-if="isGame"
-                @gameOver="gameOver"
+                @gameOver="startFinish"
                 :arr="imgs"
             />
-            <h1 class="h1" v-else>Какая-то хрень пошла не так!</h1>
+            <Finish :time="gameTime" v-else />
         </div>
     </div>
 </template>
 
 <script>
 
+import { DEFCARDS } from './constants';
 import Start from './components/start/Start.vue';
 import Game from './components/game/Game.vue';
-import { DEFCARDS } from './constants';
+import Finish from './components/finish/Finish.vue'
 
 export default {
     name: 'App',
     components: {
         Start,
-        Game
+        Game,
+        Finish
     },
     data: () => ({
         imgs: [],
         imgsCount: null,
-        isStart: true,
+        isStart: false,
+        isGame: false,
         // for api loading
         //isLoading: false,
-        isGame: false,
+        gameTime: null,
     }),
     methods: {
         startGame(count){
             let initialArr = DEFCARDS.slice(0, count);
-            // Making deep copy of array for making reactive all same elements
+            // Create deep copy of array for making reactive all same elements
             let copy = initialArr.map(e => ({...e}));
             this.imgs.push(...initialArr, ...copy);
 
             this.isStart = false;
             this.isGame = true;
         },
-        gameOver(){
-            console.log('GameOver');
+        startFinish(gameTime){
+            this.isGame = false;
+            this.gameTime = gameTime;
+            console.log('GameOver' , );
         }
     },
 }

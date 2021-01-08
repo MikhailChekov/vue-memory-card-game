@@ -19,4 +19,6 @@ const DEFCARDS = [
     { src: "./assets/img/nature/18.jpeg", isOpen: false, isHidden: false }
 ]
 
-export { DEFCARDS };
+const saljut = "./assets/img/common/saljut.gif";
+
+export { DEFCARDS, saljut };

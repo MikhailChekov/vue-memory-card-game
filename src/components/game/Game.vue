@@ -29,33 +29,24 @@ export default {
             isTwoOpen: false,
         };
     },
-    // mounted(){
-    //     this.$refs.timer.startTimer()
-    // },
     methods: {
         handleClick(i) {
-            if(this.isGameOver()) {
-                //TODO: not working when gameOver
-                this.$refs.timer.stopTimer();
-                this.gameTime = this.$refs.timer.currentTime;
-                console.log(this.gameTime);
-            }
-
+            // click to open card - return;
             if (this.cards[i].isOpen) return;
             // if click 2 cards open - close
             if (this.isTwoOpen) this.closeAll();
 
-            //if one active - check 2 card to equal
+            //Check for 1 card active
             if (this.openIndex !== null) {
                 this.cards[i].isOpen = true;
-                this.checkCards(i);
+                this.hidePair(i);
             } else {
                 this.cards[i].isOpen = true;
                 this.openIndex = i;
             }
         },
         //check 2 cards and hide if true
-        checkCards(i) {
+        hidePair(i) {
             if (this.cards[this.openIndex].src === this.cards[i].src) {
                 let src = this.cards[i].src;
                 this.cards = this.cards.map(e => {
@@ -64,8 +55,11 @@ export default {
                     }
                     return e;
                 })
+                // check for GameOver when Data is Changed 
+                if(this.isGameOver()) {
+                    this.gameOver();
+                }
             }
-
             this.isTwoOpen = true;
         },
         // close all open cards
@@ -76,12 +70,13 @@ export default {
                 return { ...e, isOpen: false };
             });
         },
-
-        //TODO:
         isGameOver() {
-            console.log('gameOVer');
-
             return this.cards.every(e => { return e.isHidden === true});
+        },
+        gameOver(gameTime) {
+            this.$refs.timer.stopTimer();
+            this.gameTime = this.$refs.timer.currentTime;
+            this.$emit('gameOver', this.gameTime);
         }
     },
     computed: {
