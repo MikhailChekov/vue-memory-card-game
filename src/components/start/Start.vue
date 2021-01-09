@@ -1,7 +1,6 @@
 <template>
     <div class="start">
         <div class="start__body">
-            
             <div class="count">
                 <p>Choose card count:</p>
                 <input type="radio" id="count_1" value="6" v-model="count">
@@ -23,6 +22,7 @@
             </select>
             <p>Theme: {{ theme }}</p> -->
             <button class="button" @click="start">Start</button>
+            <button class="button" @click="$emit('results')">Results</button>
         </div>
     </div>
 </template>

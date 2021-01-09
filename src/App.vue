@@ -2,13 +2,15 @@
     <div class="wrapper">
         <div class="container">
             <h1 class="h1">Vue memory js game</h1>
-            <Start v-if="isStart" @start="startGame" />
+            <Start v-if="isStart" @start="startGame" @results="showResults" />
             <Game 
                 v-else-if="isGame"
                 @gameOver="startFinish"
                 :arr="imgs"
             />
-            <Finish :time="gameTime" v-else />
+            <Finish @save="saveResults" :time="gameTime" v-else />
+            <Results  v-if="isResults" />
+            <Modal ref="modal" />
         </div>
     </div>
 </template>
@@ -18,24 +20,31 @@
 import { DEFCARDS } from './constants';
 import Start from './components/start/Start.vue';
 import Game from './components/game/Game.vue';
-import Finish from './components/finish/Finish.vue'
+import Finish from './components/finish/Finish.vue';
+import Modal from './components/common/Modal.vue'
+import Results from './components/results/Results.vue';
 
 export default {
     name: 'App',
     components: {
         Start,
         Game,
-        Finish
+        Finish,
+        Modal,
+        Results
     },
-    data: () => ({
-        imgs: [],
-        imgsCount: null,
-        isStart: false,
-        isGame: false,
-        // for api loading
-        //isLoading: false,
-        gameTime: null,
-    }),
+    data: function (){
+        return {
+            imgs: [],
+            imgsCount: null,
+            isStart: true,
+            isGame: false,
+            isResults: false,
+            // for api loading
+            //isLoading: false,
+            gameTime: null,
+        }
+    },
     methods: {
         startGame(count){
             let initialArr = DEFCARDS.slice(0, count);
@@ -49,13 +58,26 @@ export default {
         startFinish(gameTime){
             this.isGame = false;
             this.gameTime = gameTime;
-            console.log('GameOver' , );
+        },
+        saveResults(name){
+            //TODO: save to store or somewhere else like local storage
+            this.isStart = true;
+            this.$refs.modal.showModal = true;
+            setTimeout(() => {
+                this.$refs.modal.showModal = false;
+            }, 2500)
+        },
+        showResults(){
+            //TODO: show results
+            console.log('results');
         }
     },
 }
 </script>
 
 <style lang="scss">
+*,*:before,*:after{-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
+
 $mw: 970px;
 
 body {

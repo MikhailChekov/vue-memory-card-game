@@ -10,17 +10,21 @@
             <button @click="reload">Cancel</button>
         </div>
         <div class="input">
-            <input type="text" placeholder="Your name" v-model="name">
+            <input type="text" placeholder="Your name" @input="change" v-model="name">
+            <div class="error">{{error}}</div>
         </div>
         <img class="firework" src="../../assets/img/common/saljut.gif" alt="" />
+        <modal ref="modal"></modal>
     </div>
 </template>
 
 <script>
+
 export default {
     data: function(){
         return {
-            name: null
+            name: null,
+            error: null
         }
     },
     props: ['time'],
@@ -29,7 +33,16 @@ export default {
             document.location.reload();
         },
         save() {
-
+            if(this.name) {
+                this.$emit('save', this.name);
+            } else {
+                this.error = "Please enter your name..."
+            }
+        },
+        change() {
+            if(this.name) {
+                this.error = '';
+            }
         }
     }
 };
@@ -38,6 +51,13 @@ export default {
 <style lang="scss" scoped>
 .input {
     margin-bottom: 10px;
+    input {
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 3px #ddd;
+        height: 20px;
+        border-radius: 5px;
+        padding: 12px;
+    }
 }
 .firework {
     width: 400px;
@@ -49,10 +69,15 @@ export default {
 p {
     font-size: 18px;
 }
+.error {
+    font-size: 14px;
+    color: red;
+}
 .btns {
     margin-bottom: 10px;
     button {
         cursor: pointer;
+        color: #fff;
         margin-right: 10px;
         padding: 10px 20px;
         border-radius: 10px;
