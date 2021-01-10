@@ -19,6 +19,23 @@ const DEFCARDS = [
     { src: "./assets/img/nature/18.jpeg", isOpen: false, isHidden: false }
 ]
 
-const saljut = "./assets/img/common/saljut.gif";
+const DEFRESULTS = {
+    ease: [
+        { name: 'Винни-пух', score: 80 },
+        { name: 'Робин-Гуд', score: 50 },
+        { name: 'Вин Дизель', score: 25 }
+    ],
+    middle: [
+        { name: 'Джек Воробей', score: 150 },
+        { name: 'Капитан Америка', score: 100 },
+        { name: 'Альберт Эйнштейн', score: 70 }
+    ],
+    hard: [
+        { name: 'Чиполлино', score: 250 },
+        { name: 'Гарри Поттер', score: 210 },
+        { name: 'Клеопатра', score: 170 }
+    ]
+}
 
-export { DEFCARDS, saljut };
+
+export { DEFCARDS, DEFRESULTS };

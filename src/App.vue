@@ -8,8 +8,8 @@
                 @gameOver="startFinish"
                 :arr="imgs"
             />
-            <Finish @save="saveResults" :time="gameTime" v-else />
-            <Results  v-if="isResults" />
+            <Finish @save="saveResults" :time="gameTime" v-else-if="isFinish" />
+            <Results  v-else />
             <Modal ref="modal" />
         </div>
     </div>
@@ -37,9 +37,10 @@ export default {
         return {
             imgs: [],
             imgsCount: null,
-            isStart: true,
+            isStart: false,
             isGame: false,
-            isResults: false,
+            isFinish: false,
+            isResults: true,
             // for api loading
             //isLoading: false,
             gameTime: null,
