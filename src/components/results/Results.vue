@@ -9,7 +9,7 @@
                     <div class="header__item header-col"><div id="wins" class="table_name " href="#">Time</div></div>
                 </div>
                 <ol class="table-content" type="1">
-                    <li v-for="(player, i) in results.ease" :key="i" class="table-row">
+                    <li v-for="(player, i) in sortedResults.ease" :key="i" class="table-row">
                         <div class="table-data row-col">{{i+1}}</div>
                         <div class="table-data row-col">{{player.name}}</div>
                         <div class="table-data row-col">{{player.score}}</div>
@@ -23,7 +23,7 @@
                     <div class="header__item header-col"><div id="wins" class="table_name " href="#">Time</div></div>
                 </div>
                 <ol class="table-content" type="1">
-                    <li v-for="(player, i) in results.middle" :key="i" class="table-row">
+                    <li v-for="(player, i) in sortedResults.middle" :key="i" class="table-row">
                         <div class="table-data row-col">{{i+1}}</div>
                         <div class="table-data row-col">{{player.name}}</div>
                         <div class="table-data row-col">{{player.score}}</div>
@@ -37,7 +37,7 @@
                     <div class="header__item header-col"><div id="wins" class="table_name " href="#">Time</div></div>
                 </div>
                 <ol class="table-content" type="1">
-                    <li v-for="(player, i) in results.hard" :key="i" class="table-row">
+                    <li v-for="(player, i) in sortedResults.hard" :key="i" class="table-row">
                         <div class="table-data row-col">{{i+1}}</div>
                         <div class="table-data row-col">{{player.name}}</div>
                         <div class="table-data row-col">{{player.score}}</div>
@@ -45,17 +45,32 @@
                 </ol>
             </div>
         </div>
+        <button @click="$emit('back')" class="button">На главную</button>
     </div>
 </template>
 
 <script>
-import { DEFCARDS, DEFRESULTS } from '../../constants';
-console.log(DEFRESULTS.ease);
+import { DEFRESULTS } from '../../constants';
 
 export default {
-    data: function(){
-        return {
-            results: DEFRESULTS
+    props: ['results'],
+    methods: {
+        saveRes(){
+            this.results[this.newResults[level]].push(this.newResults[result]);
+        }
+    },
+    computed: {
+        sortedResults() {
+            let sortedResults = this.results;
+            for(let level in sortedResults){
+                sortedResults[level].sort((a, b) => a.score - b.score)
+            }
+            return sortedResults;
+        }
+    },
+    watch: {
+        newResults: function(){
+            this.saveRes();
         }
     }
 };
@@ -85,6 +100,7 @@ $color-form-highlight: #eeeeee;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0px 0px 20px 0px;
 }
 
 .table {

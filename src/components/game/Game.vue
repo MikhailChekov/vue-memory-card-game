@@ -7,6 +7,7 @@
                 <div class="card__back" :style="{ 'background-image': `url(${card.src})` }"></div>
             </div>
         </div>
+        <button @click="$emit('back')" class="button">На главную</button>
     </div>
 </template>
 
@@ -77,6 +78,7 @@ export default {
             this.$refs.timer.stopTimer();
             this.gameTime = this.$refs.timer.currentTime;
             this.$emit('gameOver', this.gameTime);
+            //TODO: erase data for initial state
         }
     },
     computed: {
@@ -105,6 +107,8 @@ export default {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
+    text-align: center;
+    margin-bottom: 20px;
 }
 .card {
     position: relative;

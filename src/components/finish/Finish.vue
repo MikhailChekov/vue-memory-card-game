@@ -7,14 +7,13 @@
         <p>Would you like to save result?</p>
         <div class="btns">
             <button @click="save">Save</button>
-            <button @click="reload">Cancel</button>
+            <button @click="$emit('back')">Cancel</button>
         </div>
         <div class="input">
             <input type="text" placeholder="Your name" @input="change" v-model="name">
             <div class="error">{{error}}</div>
         </div>
         <img class="firework" src="../../assets/img/common/saljut.gif" alt="" />
-        <modal ref="modal"></modal>
     </div>
 </template>
 
