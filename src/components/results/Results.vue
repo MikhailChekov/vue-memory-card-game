@@ -54,11 +54,6 @@ import { DEFRESULTS } from '../../constants';
 
 export default {
     props: ['results'],
-    methods: {
-        saveRes(){
-            this.results[this.newResults[level]].push(this.newResults[result]);
-        }
-    },
     computed: {
         sortedResults() {
             let sortedResults = this.results;
@@ -66,11 +61,6 @@ export default {
                 sortedResults[level].sort((a, b) => a.score - b.score)
             }
             return sortedResults;
-        }
-    },
-    watch: {
-        newResults: function(){
-            this.saveRes();
         }
     }
 };

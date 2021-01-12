@@ -1,30 +1,37 @@
 <template>
     <div>
         <timer ref="timer"></timer>
-        <div class="gameField" :style="{width: fieldWidth}">
-            <div v-for="(card, i) in cards" :key="i" class="card" :class="{ open: card.isOpen, hidden: card.isHidden }" @click="handleClick(i)">
+        <div class="gameField" :style="{ width: fieldWidth }">
+            <div
+                v-for="(card, i) in cards"
+                :key="i"
+                class="card"
+                :class="{ open: card.isOpen, hidden: card.isHidden }"
+                @click="handleClick(i)"
+            >
                 <div class="card__front"></div>
                 <div class="card__back" :style="{ 'background-image': `url(${card.src})` }"></div>
             </div>
         </div>
-        <button @click="$emit('back')" class="button">На главную</button>
+        <button @click="backToMain" class="button">На главную</button>
     </div>
 </template>
 
 <script>
-
 import Timer from './Timer.vue';
 
 export default {
     components: { Timer },
     props: ['arr'],
     data() {
+        return initialData();
+    },
+    data: function() {
         return {
             // copy cards from props and sort it
             cards: [...this.arr.concat()].sort(function() {
                 return Math.random() - 0.5;
             }),
-            count: this.arr.length,
             gameTime: null,
             openIndex: null,
             isTwoOpen: false,
@@ -51,13 +58,13 @@ export default {
             if (this.cards[this.openIndex].src === this.cards[i].src) {
                 let src = this.cards[i].src;
                 this.cards = this.cards.map(e => {
-                    if(e.src === src){
-                        e = {...e, isHidden: true}
+                    if (e.src === src) {
+                        e = { ...e, isHidden: true };
                     }
                     return e;
-                })
-                // check for GameOver when Data is Changed 
-                if(this.isGameOver()) {
+                });
+                // check for GameOver when Data is Changed
+                if (this.isGameOver()) {
                     this.gameOver();
                 }
             }
@@ -72,34 +79,37 @@ export default {
             });
         },
         isGameOver() {
-            return this.cards.every(e => { return e.isHidden === true});
+            return this.cards.every(e => {
+                return e.isHidden === true;
+            });
         },
+        //finish the game and start saving results
         gameOver(gameTime) {
             this.$refs.timer.stopTimer();
             this.gameTime = this.$refs.timer.currentTime;
             this.$emit('gameOver', this.gameTime);
-            //TODO: erase data for initial state
-        }
+        },
+        backToMain() {
+            window.location.reload();
+        },
     },
     computed: {
-        fieldWidth(){
+        fieldWidth() {
             let fieldWidth = 0;
-
-            switch(this.count){
-                case 12: 
+            switch (this.arr.length) {
+                case 12:
                     fieldWidth = 440 + 'px';
                     break;
-                case 20:  
+                case 20:
                     fieldWidth = 555 + 'px';
                     break;
                 case 36:
                     fieldWidth = 660 + 'px';
-                }
+            }
             return fieldWidth;
-        }
+        },
     }
 };
-
 </script>
 
 <style lang="scss" scoped>

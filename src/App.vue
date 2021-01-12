@@ -3,9 +3,9 @@
         <div class="container">
             <h1 class="h1">Vue memory js game</h1>
             <Start v-if="isStart" @start="startGame" @results="showResults" />
-            <Game v-else-if="isGame" @back="backToStart" @gameOver="startFinish" :arr="imgs" />
-            <Finish v-else-if="isFinish" @save="saveResults" @back="backToStart" :time="gameTime"  />
-            <Results  v-else @back="backToStart" :results="results"/>
+            <Game v-else-if="isGame" @back="refresh" @gameOver="startFinish" :arr="imgs" ref="gameRef" />
+            <Finish v-else-if="isFinish" @save="saveResults" @back="refresh" :time="gameTime" />
+            <Results v-else @back="showMain" :results="results" />
             <Modal ref="modalRef" />
         </div>
     </div>
@@ -20,21 +20,6 @@ import Finish from './components/finish/Finish.vue';
 import Modal from './components/common/Modal.vue';
 import Results from './components/results/Results.vue';
 
-let initialData = function() {
-        return {
-            imgs: [],
-            results: DEFRESULTS,
-            imgsCount: null,
-            isStart: true,
-            isGame: false,
-            isFinish: false,
-            isResults: false,
-            // for api loading
-            //isLoading: false,
-            gameTime: null,
-        }
-    };
-
 export default {
     name: 'App',
     components: {
@@ -44,14 +29,45 @@ export default {
         Modal,
         Results,
     },
-    data: initialData,
+    mounted() {
+        if(localStorage.getItem('res')){
+           this.results = JSON.parse(localStorage.getItem('res'))
+        } else {
+            this.results = DEFRESULTS;
+        }
+    },
+    data() {
+        return {
+            imgs: [],
+            results: [],
+            level: null,
+            isStart: true,
+            isGame: false,
+            isFinish: false,
+            // for api loading
+            //isLoading: false,
+            gameTime: null,
+        };
+    },
     methods: {
         startGame(count) {
             let initialArr = DEFCARDS.slice(0, count);
             // Create deep copy of array for making reactive all same elements
             let copy = initialArr.map(e => ({ ...e }));
             this.imgs.push(...initialArr, ...copy);
-            this.imgsCount = count;
+
+            count = Number(count);
+            switch (count) {
+                case 6:
+                    this.level = 'ease';
+                    break;
+                case 10:
+                    this.level = 'middle';
+                    break;
+                case 18:
+                    this.level = 'hard';
+                    break;
+            }
 
             this.isStart = false;
             this.isGame = true;
@@ -62,48 +78,37 @@ export default {
             this.gameTime = gameTime;
         },
         saveResults(name) {
-            let level;
-            switch(this.imgsCount){
-                case 6:
-                    level = "ease";
-                    break;
-                case 12:
-                    level = "middle";
-                    break;
-                case 24:
-                    level = "middle";
-                    break;
-            }
+            //prepare results data
             let result = {
                 name,
                 score: this.gameTime,
             };
+            console.log(this.level);
+            //save results to state
+            this.results[this.level].push(result);
 
-            // pass new results to gameFullResults, 
-            //gameFullResults watch child component 'Results'
-            this.results[level].push(result);
-            this.finish = false;
-            this.isStart = true;
+
+            //save results to local storage
+            const parsed = JSON.stringify(this.results);
+            localStorage.setItem('res', parsed);
+
             /* Show/Close modal after save results */
             this.$refs.modalRef.showModal = true;
             setTimeout(() => {
                 this.$refs.modalRef.showModal = false;
-            }, 2500);          
+                this.showMain();
+                window.location.reload()
+            }, 1500);
         },
         showResults() {
             this.isStart = false;
         },
-        backToStart() {
-            // erase imgs
-            this.$set(this.imgs.splice(0));
-            this.imgs = [],
-            this.imgsCount = null;
+        showMain() {
             this.isStart = true;
-            this.isGame = false;
             this.isFinish = false;
-            this.isResults = false;
-            this.gameTime = null;
-            this.gameFullResults = null;
+        },
+        refresh() {
+            window.location.reload();
         },
     },
 };
