@@ -9,6 +9,7 @@
                 @results="showResults"
                 @backToDefault="backToDefault"
                 :theme="theme"
+                :loading="isLoading"
                 :isDefault="isDefaultTheme"
                 ref="startRef"
             />
@@ -70,7 +71,7 @@ export default {
             isGame: false,
             isFinish: false,
             isDefaultTheme: true,
-            //isLoading: false,
+            isLoading: false,
             gameTime: null,
         };
     },
@@ -78,6 +79,13 @@ export default {
         searchRequest(query) {
             this.$refs.startRef.error = '';
             if (query) {
+                if(!/^[a-zA-Z0-9\s]+$/.test(query)){
+                    this.$refs.startRef.error = 'Please, use english letters...';
+                    return;
+                }
+
+                this.isLoading = true;
+
                 const URL = 'https://api.unsplash.com/search/photos/';
                 const SQUARE = 'orientation=squarish';
                 const KEY = process.env.VUE_IMAGE_API_ACESS;
@@ -92,6 +100,7 @@ export default {
                                 return { ...e, src: json.results[i].urls.regular };
                             });
                             this.isDefaultTheme = false;
+                            this.isLoading = false;
                         } else {
                             fetch(FULLURL2)
                                 .then(response => response.json())
@@ -102,8 +111,11 @@ export default {
                                         })
                                         this.isDefaultTheme = false;
                                     } else {
+                                        
                                         this.$refs.startRef.error = 'Not enough photo for the game, please choose another theme...'
                                     }
+
+                                    this.isLoading = false;
                                 })
                                 .catch(rej=> {
                                     this.$refs.startRef.error = 'Oops, something go wrong, try another time...'
@@ -147,9 +159,15 @@ export default {
                 name,
                 score: this.gameTime,
             };
-            console.log(this.level);
             //save results to state
             this.results[this.level].push(result);
+            //sort results and delete last element if more than 10
+            for(let level in this.results){
+                this.results[level].sort((a, b) => a.score - b.score)
+                if(this.results[level].length > 10){
+                    this.results[level].pop();
+                }
+            }
 
             //save results to local storage
             const parsed = JSON.stringify(this.results);

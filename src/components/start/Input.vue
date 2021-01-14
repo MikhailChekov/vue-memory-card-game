@@ -10,16 +10,22 @@
                 <label class="c-form__toggle" for="checkbox" data-title="Choose another theme"></label>
             </form>
         </div>
+        <div class="loader">
+            <Loader  v-if="loading"/>
+        </div>
     </div>
 </template>
 
 <script>
+import Loader from '../common/Loader';
+
 export default {
     data() {
         return {
             query: '',
         };
     },
+    props: ['loading'],
     methods: {
         focusInput() {
             //make timeout for add focus after extended animation stop working
@@ -29,6 +35,9 @@ export default {
             
         },
     },
+    components: {
+        Loader
+    }
 };
 </script>
 
@@ -68,6 +77,7 @@ export default {
 .c-formContainer {
     position: relative;
     font-weight: 700;
+    margin-bottom: 15px;
 }
 
 .c-form,

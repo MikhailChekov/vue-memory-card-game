@@ -13,9 +13,9 @@
                 </div>
             </div>
             <div class="theme_input">
-                <Input @search="search" ref="inputThemeRef"/>
+                <Input @search="search" :loading="loading" ref="inputThemeRef"/>
             </div>
-            <button v-if="!isDefault" class="button_info" @click="$emit('backToDefault')">Back to default theme</button>
+            <button v-if="!isDefault" class="button_info" @click="backToDefault">Back to default theme</button>
             <div class="error">{{ error }}</div>
             <div class="count">
                 <h4>Choose card count:</h4>
@@ -37,7 +37,7 @@ import Input from './Input';
 
 export default {
     components: { Input },
-    props: ['theme', 'isDefault'],
+    props: ['theme', 'isDefault', 'loading'],
     data: () => {
         return {
             // theme: 'Flags',
@@ -49,6 +49,11 @@ export default {
         //pass the search to App
         search(query){
             this.$emit('search', query)
+        },
+        backToDefault(){
+            this.$emit('backToDefault');
+            // erase query line in to the input
+            this.$refs.inputThemeRef.query = '';
         }
     },
     computed: {
@@ -103,8 +108,5 @@ select {
         font-size: 14px;
         color: red;
     }
-}
-.theme_input{
-    margin-bottom: 20px;
 }
 </style>

@@ -56,16 +56,11 @@ export default {
     props: ['results'],
     computed: {
         sortedResults() {
-            //TODO: if results length > 10 - change sortedResults length to 10 
             let sortedResults = this.results;
             for(let level in sortedResults){
                 sortedResults[level].sort((a, b) => a.score - b.score)
+                // sortedResults[level].length > 10
             }
-            //check for working
-            if(sortedResults.length > 10){
-                this.$set(sortedResults.splice(10));
-            }
-
             return sortedResults;
         }
     }
