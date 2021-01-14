@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
+const Dotenv = require('dotenv-webpack');
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -35,6 +36,8 @@ const plugins = () => {
         new MiniCssExtractPlugin({
             filename: `${PATHS.assets}/css/${filename('css')}`
         }),
+        //For env variables
+        new Dotenv(),
         new CopyWebpackPlugin({
             patterns: [
                 {
@@ -197,9 +200,10 @@ module.exports = {
         ]
     },
     plugins: plugins(),
-    // resolve: {
-    //     alias: {
-    //         "~": path.resolve(__dirname, 'src/')
-    //     }
-    // }
+    resolve: {
+        extensions: ['*', '.js', '.vue', '.scss', '.json'],
+        alias: {
+            "~": path.resolve(__dirname, 'src/')
+        }
+    }
 }

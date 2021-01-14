@@ -56,10 +56,16 @@ export default {
     props: ['results'],
     computed: {
         sortedResults() {
+            //TODO: if results length > 10 - change sortedResults length to 10 
             let sortedResults = this.results;
             for(let level in sortedResults){
                 sortedResults[level].sort((a, b) => a.score - b.score)
             }
+            //check for working
+            if(sortedResults.length > 10){
+                this.$set(sortedResults.splice(10));
+            }
+
             return sortedResults;
         }
     }
@@ -88,13 +94,12 @@ $color-form-highlight: #eeeeee;
 
 .tableWrapper{
     display: flex;
-    align-items: center;
     justify-content: space-between;
     margin: 0px 0px 20px 0px;
 }
 
 .table {
-    flex: 0 0 33%;
+    flex: 0 1 33%;
     border: 1px solid $color-form-highlight;
     background-color: #fff;
 }

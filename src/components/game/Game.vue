@@ -1,11 +1,13 @@
 <template>
     <div>
         <timer ref="timer"></timer>
-        <div class="gameField" :style="{ width: fieldWidth }">
+         
+        <div class="gameField" :style="{ width: gameSizings.fieldWidth }">
             <div
                 v-for="(card, i) in cards"
                 :key="i"
                 class="card"
+                :style="{ width: gameSizings.cardSize , height: gameSizings.cardSize }"
                 :class="{ open: card.isOpen, hidden: card.isHidden }"
                 @click="handleClick(i)"
             >
@@ -94,19 +96,30 @@ export default {
         },
     },
     computed: {
-        fieldWidth() {
-            let fieldWidth = 0;
+        gameSizings() {
+
+            let gameSizings = {
+                fieldWidth: 0,
+                cardSize: 0
+            }
+
             switch (this.arr.length) {
                 case 12:
-                    fieldWidth = 440 + 'px';
+                    gameSizings.fieldWidth = 970 + 'px';
+                    gameSizings.cardSize = 227 + 'px';
                     break;
                 case 20:
-                    fieldWidth = 555 + 'px';
+                    gameSizings.fieldWidth = 970 + 'px';
+                    gameSizings.cardSize = 180 + 'px';
                     break;
                 case 36:
-                    fieldWidth = 660 + 'px';
+                    gameSizings.fieldWidth = 900 + 'px';
+                    gameSizings.cardSize = 140 + 'px';
             }
-            return fieldWidth;
+
+
+
+            return gameSizings;
         },
     }
 };

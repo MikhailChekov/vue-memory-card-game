@@ -1,18 +1,41 @@
 <template>
     <div class="wrapper">
         <div class="container">
-            <h1 class="h1">Vue memory js game</h1>
-            <Start v-if="isStart" @start="startGame" @results="showResults" />
-            <Game v-else-if="isGame" @back="refresh" @gameOver="startFinish" :arr="imgs" ref="gameRef" />
-            <Finish v-else-if="isFinish" @save="saveResults" @back="refresh" :time="gameTime" />
-            <Results v-else @back="showMain" :results="results" />
-            <Modal ref="modalRef" />
+            <h1 v-if="isStart" class="h1">Vue memory js game</h1>
+            <Start 
+                v-if="isStart"
+                @search="searchRequest"
+                @start="startGame"
+                @results="showResults"
+                @backToDefault="backToDefault"
+                :theme="theme"
+                :isDefault="isDefaultTheme"
+                ref="startRef"
+            />
+            <Game 
+                v-else-if="isGame" 
+                @back="refresh" 
+                @gameOver="startFinish" 
+                :arr="imgs" 
+                ref="gameRef" 
+            />
+            <Finish 
+                v-else-if="isFinish" 
+                @save="saveResults" 
+                @back="refresh" 
+                :time="gameTime" 
+            />
+            <Results 
+                v-else @back="showMain" 
+                :results="results" 
+            />
+            <!-- TODO: make modal reusable, add there sloat's -->
+            <modal ref="modalRef">Your results have been saved</modal>
         </div>
     </div>
 </template>
 
 <script>
-import Vue from 'vue';
 import { DEFCARDS, DEFRESULTS } from './constants';
 import Start from './components/start/Start.vue';
 import Game from './components/game/Game.vue';
@@ -30,28 +53,69 @@ export default {
         Results,
     },
     mounted() {
-        if(localStorage.getItem('res')){
-           this.results = JSON.parse(localStorage.getItem('res'))
+        // load Results from local storage or include default Results Obj
+        if (localStorage.getItem('res')) {
+            this.results = JSON.parse(localStorage.getItem('res'));
         } else {
             this.results = DEFRESULTS;
         }
     },
     data() {
         return {
+            theme: DEFCARDS,
             imgs: [],
             results: [],
             level: null,
             isStart: true,
             isGame: false,
             isFinish: false,
-            // for api loading
+            isDefaultTheme: true,
             //isLoading: false,
             gameTime: null,
         };
     },
     methods: {
+        searchRequest(query) {
+            this.$refs.startRef.error = '';
+            if (query) {
+                const URL = 'https://api.unsplash.com/search/photos/';
+                const SQUARE = 'orientation=squarish';
+                const KEY = process.env.VUE_IMAGE_API_ACESS;
+                const FULLURL = `${URL}?&query=${query}&client_id=${KEY}&count=18&page=1&per_page=18&${SQUARE}`;
+                const FULLURL2 = `${URL}?&query=${query}&client_id=${KEY}&count=18&page=1&per_page=18`;
+
+                fetch(FULLURL)
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.results.length > 17) {
+                            this.theme = this.theme.map((e, i) => {
+                                return { ...e, src: json.results[i].urls.regular };
+                            });
+                            this.isDefaultTheme = false;
+                        } else {
+                            fetch(FULLURL2)
+                                .then(response => response.json())
+                                .then(json => {
+                                    if (json.results.length > 17) {
+                                        this.theme = this.theme.map((e, i) => {
+                                            return { ...e, src: json.results[i].urls.regular };
+                                        })
+                                        this.isDefaultTheme = false;
+                                    } else {
+                                        this.$refs.startRef.error = 'Not enough photo for the game, please choose another theme...'
+                                    }
+                                })
+                                .catch(rej=> {
+                                    this.$refs.startRef.error = 'Oops, something go wrong, try another time...'
+                                })
+                        }
+                    });
+            } else {
+                this.$refs.startRef.error = 'Please, fill the theme';
+            }
+        },
         startGame(count) {
-            let initialArr = DEFCARDS.slice(0, count);
+            let initialArr = this.theme.slice(0, count);
             // Create deep copy of array for making reactive all same elements
             let copy = initialArr.map(e => ({ ...e }));
             this.imgs.push(...initialArr, ...copy);
@@ -87,7 +151,6 @@ export default {
             //save results to state
             this.results[this.level].push(result);
 
-
             //save results to local storage
             const parsed = JSON.stringify(this.results);
             localStorage.setItem('res', parsed);
@@ -97,7 +160,7 @@ export default {
             setTimeout(() => {
                 this.$refs.modalRef.showModal = false;
                 this.showMain();
-                window.location.reload()
+                window.location.reload();
             }, 1500);
         },
         showResults() {
@@ -106,6 +169,10 @@ export default {
         showMain() {
             this.isStart = true;
             this.isFinish = false;
+        },
+        backToDefault() {
+            this.theme = DEFCARDS;
+            this.isDefaultTheme = true;
         },
         refresh() {
             window.location.reload();
@@ -127,6 +194,11 @@ $mw: 970px;
 
 body {
     background-color: #e4dbbf;
+}
+
+.error {
+    font-size: 18px;
+    color: red;
 }
 
 .wrapper {
@@ -157,9 +229,9 @@ body {
     text-align: center;
     padding: 11px 32px;
     border: solid 1px #004f72;
-    -webkit-border-radius: 17px;
-    -moz-border-radius: 17px;
-    border-radius: 17px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
     font-size: 20px;
     font-weight: bold;
     color: #e5ffff;
@@ -170,6 +242,25 @@ body {
     background-image: -ms-linear-gradient(top, #70ab8f 0%, #145235 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#145235', endColorstr='#145235',GradientType=0 );
     background-image: linear-gradient(top, #70ab8f 0%, #145235 100%);
+    -webkit-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;
+    -moz-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;
+    box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;
+    filter: dropshadow(color=#bababa, offx=-2, offy=0);
+}
+.button_info {
+    background-color: #4d59e1;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    padding: 11px 32px;
+    border: solid 1px #004f72;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #e5ffff;
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#145235', endColorstr='#145235',GradientType=0 );
     -webkit-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;
     -moz-box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;
     box-shadow: 0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;

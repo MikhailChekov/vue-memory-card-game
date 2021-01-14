@@ -5,7 +5,7 @@
                 <div class="modal-container">
                     <div class="modal-body">
                         <slot name="body">
-                            Your results have been saved
+                            
                         </slot>
                     </div>
                 </div>
