@@ -30,7 +30,6 @@
                 v-else @back="showMain" 
                 :results="results" 
             />
-            <!-- TODO: make modal reusable, add there sloat's -->
             <modal ref="modalRef">Your results have been saved</modal>
         </div>
     </div>
