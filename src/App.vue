@@ -229,6 +229,10 @@ body {
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
+    @media (max-width: 400px) {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 }
 
 .h1 {

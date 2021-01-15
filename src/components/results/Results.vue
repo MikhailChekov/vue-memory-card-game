@@ -59,7 +59,6 @@ export default {
             let sortedResults = this.results;
             for(let level in sortedResults){
                 sortedResults[level].sort((a, b) => a.score - b.score)
-                // sortedResults[level].length > 10
             }
             return sortedResults;
         }
@@ -91,12 +90,19 @@ $color-form-highlight: #eeeeee;
     display: flex;
     justify-content: space-between;
     margin: 0px 0px 20px 0px;
+    @media (max-width: 700px) {
+        flex-wrap: wrap;
+    }
 }
 
 .table {
     flex: 0 1 33%;
     border: 1px solid $color-form-highlight;
     background-color: #fff;
+    @media (max-width: 700px) {
+        flex: 1 1 100%;
+        margin-bottom: 10px;
+    }
 }
 .table-header {
     display: flex;

@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>
-            Congrats you have won! Your game time is -
+            Congrats you won! Your game time is -
             <span class="time">{{ this.time }}</span> sec.
         </p>
         <p>Would you like to save result?</p>

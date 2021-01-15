@@ -59,6 +59,9 @@ export default {
     computed: {
         //limit the theme photos to 5
         filteredTheme(){
+            if(window.innerWidth < 579){
+                return this.theme.slice(0, 3);    
+            }
             return this.theme.slice(0, 5);
         }
     }
@@ -66,6 +69,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h4{
+    @media (max-width: 400px) {
+        margin: 10px auto;
+    }
+}
 .theme_input{
     display: flex;
     align-items: center;
@@ -87,10 +95,12 @@ select {
     text-align-last: center;
 }
 .theme{
-    margin: 0 auto 20px auto; 
-    width: 550px;
+    text-align: center;
+    margin: 0 auto 20px auto;
+    max-width: 550px;
     .theme__field {
         display: flex;
+        justify-content: space-between;
         flex: 0 0 100px;
     }
     .theme__card {
@@ -100,13 +110,18 @@ select {
         border-radius: 10px;
         margin: 5px;
         overflow: hidden; 
-        transform: perspective(600px) rotateY(180deg);
         flex-direction: column;
         background-size: cover;
+        @media (max-width: 400px) {
+            margin: 2px;
+        }
     }
     .error {
         font-size: 14px;
         color: red;
+    }
+    @media (max-width: 400px) {
+        margin: 0 auto 10px auto;
     }
 }
 </style>

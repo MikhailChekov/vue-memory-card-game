@@ -97,24 +97,69 @@ export default {
     },
     computed: {
         gameSizings() {
-
+            let width = window.innerWidth;
             let gameSizings = {
                 fieldWidth: 0,
                 cardSize: 0
             }
-
+            //Adaptive cards for some displays and cards count
             switch (this.arr.length) {
                 case 12:
-                    gameSizings.fieldWidth = 970 + 'px';
-                    gameSizings.cardSize = 227 + 'px';
+                    if(width < 970 && width > 770){
+                        // 770 Max
+                        gameSizings.fieldWidth = 770 + 'px';
+                        gameSizings.cardSize = 173 + 'px';
+                    } else if(window.innerWidth < 771 && width > 479){
+                        // 480 Max
+                        gameSizings.fieldWidth = 480 + 'px';
+                        gameSizings.cardSize = 140 + 'px'; 
+                    } else if(width < 479){
+                        // Small 
+                        gameSizings.fieldWidth = 320 + 'px';
+                        gameSizings.cardSize = 88 + 'px'; 
+                    } else {
+                        //Large
+                        gameSizings.fieldWidth = 970 + 'px';
+                        gameSizings.cardSize = 227 + 'px'; 
+                    }
                     break;
                 case 20:
-                    gameSizings.fieldWidth = 970 + 'px';
-                    gameSizings.cardSize = 180 + 'px';
+                    if(width < 970 && width > 770){
+                        // 770 Max
+                        gameSizings.fieldWidth = 770 + 'px';
+                        gameSizings.cardSize = 173 + 'px';
+                    } else if(window.innerWidth < 771 && width > 479){
+                        // 480 Max
+                        gameSizings.fieldWidth = 480 + 'px';
+                        gameSizings.cardSize = 102 + 'px'; 
+                    } else if(width < 479){
+                        // Small 
+                        gameSizings.fieldWidth = 320 + 'px';
+                        gameSizings.cardSize = 63 + 'px'; 
+                    } else {
+                        //Large
+                        gameSizings.fieldWidth = 970 + 'px';
+                        gameSizings.cardSize = 180 + 'px';
+                    }
                     break;
                 case 36:
-                    gameSizings.fieldWidth = 900 + 'px';
-                    gameSizings.cardSize = 140 + 'px';
+                    if(width < 970 && width > 770){
+                        // 770 Max
+                        gameSizings.fieldWidth = 770 + 'px';
+                        gameSizings.cardSize = 173 + 'px';
+                    } else if(window.innerWidth < 771 && width > 479){
+                        // 480 Max
+                        gameSizings.fieldWidth = 480 + 'px';
+                        gameSizings.cardSize = 102 + 'px'; 
+                    } else if(width < 480){
+                        // Small 
+                        gameSizings.fieldWidth = 320 + 'px';
+                        gameSizings.cardSize = 63 + 'px'; 
+                    } else {
+                        //Large
+                        gameSizings.fieldWidth = 900 + 'px';
+                        gameSizings.cardSize = 140 + 'px';
+                    }
             }
 
 
@@ -132,6 +177,9 @@ export default {
     flex-wrap: wrap;
     text-align: center;
     margin-bottom: 20px;
+    @media (max-width: 770px) {
+        justify-content: space-around;
+    }
 }
 .card {
     position: relative;
