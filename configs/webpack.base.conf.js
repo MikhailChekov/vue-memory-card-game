@@ -93,7 +93,7 @@ module.exports = {
     output: {
         filename: `${PATHS.assets}/js/${filename('js')}`,
         path: PATHS.dist,
-        publicPath: '/'
+        publicPath: ''
     },
     externals: {
         paths: PATHS

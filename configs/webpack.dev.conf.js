@@ -17,9 +17,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     ],
     devServer: {
         contentBase: baseWebpackConfig.externals.paths.dist,
-        open: 'Google Chrome',
+        // open: 'Google Chrome',
         overlay: true,
-        port: 9000
+        port: 8800
     }
 })
 

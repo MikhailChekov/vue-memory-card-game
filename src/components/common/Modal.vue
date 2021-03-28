@@ -4,7 +4,7 @@
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <div class="modal-body">
-                        <slot></slot>
+                        {children}
                     </div>
                 </div>
             </div>
